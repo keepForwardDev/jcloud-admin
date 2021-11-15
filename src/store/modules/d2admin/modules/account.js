@@ -1,6 +1,5 @@
 import { Message, MessageBox } from 'element-ui'
 import util from '@/libs/util.js'
-import router from '@/router'
 import request from '@/libs/request.js'
 export default {
   namespaced: true,
@@ -35,7 +34,9 @@ export default {
         await request.get('/auth/logout?token=' + util.cookies.get('jtoken'))
         util.cookies.remove('jtoken')
         // 跳转路由
-        router.push({ name: 'login' })
+        // router.push({ name: 'login' })
+        // 重新刷新路由
+        window.location.reload()
       }
       // 判断是否需要确认
       if (confirm) {

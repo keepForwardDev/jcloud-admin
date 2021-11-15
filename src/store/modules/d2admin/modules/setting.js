@@ -6,7 +6,6 @@ export default {
   },
   actions: {
     async setOpenUnLoginBox ({ state, dispatch }, flag) {
-      debugger
       // store 赋值
       state.openUnLoginBox = flag
     }

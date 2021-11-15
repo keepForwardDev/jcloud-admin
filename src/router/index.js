@@ -7,10 +7,13 @@ import 'nprogress/nprogress.css'
 import request from '@/libs/request.js'
 import store from '@/store/index'
 import util from '@/libs/util.js'
-
 // 路由数据
 import routes from './routes'
-
+import layoutHeaderAside from '@/layout/header-aside'
+import { getMenus } from '@/menu/index'
+// 动态路由
+let asyncRouter
+const _import = require('@/libs/util.import.' + process.env.NODE_ENV)
 // fix vue-router NavigationDuplicated
 const VueRouterPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push (location) {
@@ -40,25 +43,25 @@ router.beforeEach(async (to, from, next) => {
   NProgress.start()
   // 关闭搜索面板
   store.commit('d2admin/search/set', false)
-  // next()
-  // 如果要登录需要放开这里
-  const token = util.cookies.get('jtoken')
-  const path = to.path
-  if ((token && token !== 'undefined')) {
-    // 已登录，判断有无获取用户信息
-    if (store.state.d2admin.user.id) {
-      next()
-    } else { // 否则获取用户信息
-      request.get()
-    }
+  const userId = store.state.d2admin.user.info.id
+  if (userId) {
+    next()
   } else {
-    next({
-      name: 'login',
-      query: {
-        redirect: to.fullPath
-      }
-    })
-    NProgress.done()
+    if (to.path === '/login') {
+      next()
+    } else {
+      store.state.d2admin.setting.openUnLoginBox = true
+      request.get('/user/info').then(res => {
+        if (res.code === 1) {
+          store.state.d2admin.user.info = res.data
+          asyncRouter = res.data.menus.filter(item => item.name === '后台管理')
+          go(to, next)
+        } else {
+          next('/login')
+        }
+        store.state.d2admin.setting.openUnLoginBox = false
+      })
+    }
   }
 })
 
@@ -72,27 +75,45 @@ router.afterEach(to => {
 })
 
 // 动态路由在这里实现
-// function go(to, next) {
-//   asyncRouter = filterAsyncRouter(asyncRouter)
-//   router.addRoutes(asyncRouter)
-//   next({ ...to, replace: true })
-// }
-//
-// function filterAsyncRouter(routes) {
-//   return routes.filter((route) => {
-//     const component = route.component
-//     if (component) {
-//       if (route.component === 'Layout') {
-//         route.component = Layout
-//       } else {
-//         const pathSrc = route.component
-//         route.component = (resolve) => require([`@/views${pathSrc}`], resolve)
-//       }
-//       if (route.children && route.children.length) {
-//         route.children = filterAsyncRouter(route.children)
-//       }
-//       return true
-//     }
-//   })
-// }
+async function go (to, next) {
+  if (asyncRouter.length > 0) {
+    const adminRoutes = asyncRouter[0]
+    router.addRoutes(filterAsyncRouter(adminRoutes.routers))
+    const menu = getMenus(adminRoutes.routers)
+    const menuHeader = [{
+      path: '/index',
+      title: '首页',
+      icon: 'home'
+    }, ...menu]
+    // 设置顶栏菜单
+    store.state.d2admin.menu.header = menuHeader
+    // 初始化菜单搜索功能
+    store.commit('d2admin/search/init', menuHeader)
+    store.commit('d2admin/page/init', adminRoutes.routers)
+    // 设置侧边栏
+    store.state.d2admin.menu.allSide = menu
+    next(to.path)
+  } else {
+    next()
+  }
+}
+
+function filterAsyncRouter (routes) {
+  const allRoutes = []
+  for (let j = 0; j < routes.length; j++) {
+    const route = routes[j]
+    const component = route.component
+    if (!component) {
+      route.component = layoutHeaderAside
+    } else {
+      const pathSrc = route.component
+      route.component = _import(pathSrc)
+    }
+    if (route.children && route.children.length) {
+      route.children = filterAsyncRouter(route.children)
+    }
+    allRoutes.push(route)
+  }
+  return allRoutes
+}
 export default router

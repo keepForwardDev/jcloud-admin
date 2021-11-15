@@ -8,6 +8,7 @@ export default {
     header: [],
     // 侧栏菜单
     aside: [],
+    allSide: [], // 所有侧栏菜单
     // 侧边栏收缩
     asideCollapse: setting.menu.asideCollapse,
     // 侧边栏折叠动画
@@ -110,6 +111,10 @@ export default {
     asideSet (state, menu) {
       // store 赋值
       state.aside = menu
+    },
+    allSideSet (state, menu) {
+      // store 赋值
+      state.allSide = menu
     }
   }
 }

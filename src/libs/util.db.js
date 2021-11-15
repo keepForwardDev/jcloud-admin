@@ -39,7 +39,7 @@ export function pathInit ({
     currentPath = dbName
   }
   const value = db.get(currentPath).value()
-  if (!(value !== undefined && validator(value))) {
+  if (!value) {
     db
       .set(currentPath, defaultValue)
       .write()

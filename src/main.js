@@ -8,8 +8,6 @@ import d2Admin from '@/plugin/d2admin'
 import store from '@/store/index'
 // 菜单和路由设置
 import router from './router'
-import { menuHeader, menuAside } from '@/menu'
-import { frameInRoutes } from '@/router/routes'
 import request from '@/libs/request.js'
 import animated from 'animate.css'
 // 核心插件
@@ -31,12 +29,6 @@ new Vue({
   i18n,
   render: h => h(App),
   created () {
-    // 处理路由 得到每一级的路由设置
-    this.$store.commit('d2admin/page/init', frameInRoutes)
-    // 设置顶栏菜单
-    this.$store.commit('d2admin/menu/headerSet', menuHeader)
-    // 初始化菜单搜索功能
-    this.$store.commit('d2admin/search/init', menuHeader)
   },
   mounted () {
     // 展示系统信息
@@ -53,7 +45,7 @@ new Vue({
     '$route.matched': {
       handler (matched) {
         if (matched.length > 0) {
-          const _side = menuAside.filter(menu => menu.path === matched[0].path)
+          const _side = this.$store.state.d2admin.menu.allSide.filter(menu => menu.path === matched[0].path)
           this.$store.commit('d2admin/menu/asideSet', _side.length > 0 ? _side[0].children : [])
         }
       },
