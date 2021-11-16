@@ -65,6 +65,9 @@
                   class="button-login">
                   登录
                 </el-button>
+                <el-form-item style="text-align: center">
+                  <el-checkbox v-model="formLogin.rememberme" :true-label="1" :false-label="0">保持登录</el-checkbox>
+                </el-form-item>
               </el-form>
             </el-card>
 <!--            <p
@@ -105,7 +108,8 @@ export default {
         password: '',
         code: '',
         grant_type: 'password',
-        requestSn: ''
+        requestSn: '',
+        rememberme: 0
       },
       // 表单校验
       rules: {
