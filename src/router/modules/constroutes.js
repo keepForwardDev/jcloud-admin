@@ -3,7 +3,7 @@ import layoutHeaderAside from '@/layout/header-aside'
 const _import = require('@/libs/util.import.' + process.env.NODE_ENV)
 
 /**
- * 在主框架内显示
+ * 在主框架内显示  静态菜单
  */
 const frameIn = [
   {

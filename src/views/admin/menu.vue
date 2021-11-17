@@ -21,6 +21,7 @@
         <div class="tree-aside">
           <el-scrollbar style="height:calc(100vh - 250px);" ref="scrollbar">
             <el-tree
+              default-expand-all
               ref="groupTree"
               node-key="id"
               :data="treeList"

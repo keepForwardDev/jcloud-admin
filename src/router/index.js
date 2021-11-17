@@ -8,12 +8,11 @@ import request from '@/libs/request.js'
 import store from '@/store/index'
 import util from '@/libs/util.js'
 // 路由数据
-import routes from './routes'
-import layoutHeaderAside from '@/layout/header-aside'
+import routes from './modules/constroutes'
 import { getMenus } from '@/menu/index'
+import { filterAsyncRouters } from '@/router/asyncrouter'
 // 动态路由
 let asyncRouter
-const _import = require('@/libs/util.import.' + process.env.NODE_ENV)
 // fix vue-router NavigationDuplicated
 const VueRouterPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push (location) {
@@ -78,7 +77,7 @@ router.afterEach(to => {
 async function go (to, next) {
   if (asyncRouter.length > 0) {
     const adminRoutes = asyncRouter[0]
-    router.addRoutes(filterAsyncRouter(adminRoutes.routers))
+    router.addRoutes(filterAsyncRouters(adminRoutes.routers))
     const menu = getMenus(adminRoutes.routers)
     const menuHeader = [{
       path: '/index',
@@ -98,22 +97,4 @@ async function go (to, next) {
   }
 }
 
-function filterAsyncRouter (routes) {
-  const allRoutes = []
-  for (let j = 0; j < routes.length; j++) {
-    const route = routes[j]
-    const component = route.component
-    if (!component) {
-      route.component = layoutHeaderAside
-    } else {
-      const pathSrc = route.component
-      route.component = _import(pathSrc)
-    }
-    if (route.children && route.children.length) {
-      route.children = filterAsyncRouter(route.children)
-    }
-    allRoutes.push(route)
-  }
-  return allRoutes
-}
 export default router
