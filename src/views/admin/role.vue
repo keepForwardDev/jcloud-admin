@@ -103,7 +103,7 @@
 import { validNotNull, validNotCN } from '@/libs/my-validate'
 import privilegesComponent from '@/views/admin/components/privileges'
 export default {
-  name: 'admin-clients',
+  name: 'admin-role',
   data () {
     return {
       search: {

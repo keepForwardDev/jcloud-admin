@@ -129,7 +129,7 @@
 <script>
 import { validNotNull } from '@/libs/my-validate'
 export default {
-  name: 'admin-department',
+  name: 'admin-menu',
   data () {
     return {
       filterText: '',

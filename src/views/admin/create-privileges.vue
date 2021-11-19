@@ -43,10 +43,10 @@
       <el-main>
         <el-form ref="form"  :model="formData" label-width="120px" size="medium" :rules="formRules">
           <el-form-item label="权限名称" prop="name">
-            <el-input placeholder="请输入菜单名称" style="width: 400px" v-model="formData.name">
+            <el-input placeholder="请输入权限名称" style="width: 400px" v-model="formData.name">
             </el-input>
           </el-form-item>
-          <el-form-item label="系统唯一编码" prop="name">
+          <el-form-item label="系统唯一编码" prop="code">
             <el-input style="width: 400px"  v-model="formData.code" placeholder="用于确定该权限的唯一性">
             </el-input>
           </el-form-item>
@@ -99,7 +99,7 @@
 <script>
 import { validNotNull } from '@/libs/my-validate'
 export default {
-  name: 'admin-department',
+  name: 'admin-privileges',
   data () {
     return {
       filterText: '',
@@ -200,19 +200,12 @@ export default {
       this.parentName = ''
       this.formData = {
         id: '',
-        title: '',
         name: '',
-        hidden: false,
+        code: '',
         parentId: 0,
-        redirect: '',
-        path: '',
-        component: '',
-        sort: 0,
-        meta: {
-          icon: '',
-          cache: false
-        },
-        remark: ''
+        url: '',
+        description: '',
+        sort: 0
       }
     },
     getMenuType () {

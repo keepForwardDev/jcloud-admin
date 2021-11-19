@@ -161,7 +161,7 @@ import { validNotNull } from '@/libs/my-validate'
 import privilegesComponent from '@/views/admin/components/privileges'
 import privilegesView from './components/privileges-view'
 export default {
-  name: 'user',
+  name: 'admin-user',
   data () {
     const customValidator = (rule, value, callback) => {
       var regex = /^1[345789]\d{9}$/
