@@ -40,5 +40,6 @@
     <% for (var i in htmlWebpackPlugin.options.cdn&&htmlWebpackPlugin.options.cdn.js) { %>
     <script src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>
     <% } %>
+  <script src="<%= BASE_URL %>tinymce/tinymce.min.js"></script>
   </body>
 </html>
