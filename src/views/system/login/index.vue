@@ -35,6 +35,7 @@
                 <el-form-item prop="username">
                   <el-input
                     type="text"
+                    @keyup.enter.native="submit"
                     v-model="formLogin.username"
                     placeholder="用户名">
                     <i slot="prepend" class="fa fa-user-circle-o"></i>
@@ -43,6 +44,7 @@
                 <el-form-item prop="password">
                   <el-input
                     type="password"
+                    @keyup.enter.native="submit"
                     v-model="formLogin.password"
                     placeholder="密码">
                     <i slot="prepend" class="fa fa-keyboard-o"></i>
@@ -51,6 +53,7 @@
                 <el-form-item prop="code">
                   <el-input
                     type="text"
+                    @keyup.enter.native="submit"
                     v-model="formLogin.code"
                     placeholder="验证码">
                     <template slot="append">
@@ -61,6 +64,7 @@
                 <el-button
                   size="default"
                   @click="submit"
+                  :loading="loginLoading"
                   type="primary"
                   class="button-login">
                   登录
@@ -135,7 +139,8 @@ export default {
           }
         ]
       },
-      timeStamp: ''
+      timeStamp: '',
+      loginLoading: false
     }
   },
   computed: {
@@ -167,6 +172,7 @@ export default {
     submit () {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
+          this.loginLoading = true
           this.$post('/auth/login', this.formLogin).then(res => {
             if (res.code === 1) {
               this.login(res)
@@ -175,9 +181,12 @@ export default {
                   this.$router.replace(this.$route.query.redirect || '/')
                 })
             } else {
+              this.loginLoading = false
               this.changeSrc()
               this.$message.error(res.msg)
             }
+          }).catch(error => {
+            this.loginLoading = false
           })
         } else {
           // 登录表单校验失败
